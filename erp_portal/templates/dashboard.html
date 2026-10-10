@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounts Payable & Reconciliation Hub | NexusERP</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-page">
+  <header class="top-nav">
+    <div class="nav-brand">
+      <span class="logo-icon">🏢</span>
+      <span class="brand-title">NexusERP</span>
+      <span class="env-pill">AP Environment: Sandbox 2026</span>
+    </div>
+
+    <div class="nav-controls">
+      <div class="chaos-toggle-box">
+        <label for="chaos-mode-checkbox" class="toggle-label">
+          <input type="checkbox" id="chaos-mode-checkbox" {% if chaos_mode %}checked{% endif %}>
+          <span class="toggle-text">Chaos Mode (Mutate Selectors)</span>
+        </label>
+      </div>
+
+      <button id="btn-reset-db" class="btn btn-outline-danger btn-sm" title="Restore seed data">
+        🔄 Reset ERP State
+      </button>
+
+      <div class="user-profile">
+        <span class="avatar">👤</span>
+        <span class="username" id="current-user-tag">{{ user }}</span>
+        <a href="/logout" class="btn-logout" id="btn-logout" title="Sign out">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="page-header">
+      <div>
+        <h1 class="page-title">Accounts Payable Settlement Registry</h1>
+        <p class="page-subtitle">Vendor Invoices, Matching Actions, and Line-Item Audit Trails</p>
+      </div>
+      <div class="summary-metrics">
+        <div class="metric-card">
+          <div class="metric-label">Total Invoices</div>
+          <div class="metric-val" id="metric-total">{{ invoices|length }}</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Pending Action</div>
+          <div class="metric-val text-warning" id="metric-pending">
+            {{ invoices | selectattr("status", "equalto", "Pending") | list | length }}
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Reconciled</div>
+          <div class="metric-val text-success" id="metric-reconciled">
+            {{ invoices | selectattr("status", "equalto", "Reconciled") | list | length }}
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Disputed</div>
+          <div class="metric-val text-danger" id="metric-disputed">
+            {{ invoices | selectattr("status", "equalto", "Disputed") | list | length }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter and Search Toolbar -->
+    <section class="filter-toolbar">
+      <div class="filter-group">
+        <label for="vendor-filter">Filter Vendor:</label>
+        <select id="vendor-filter" class="form-select">
+          <option value="">All Vendors</option>
+          <option value="VEND-101">VEND-101: CloudScale Infrastructure Inc</option>
+          <option value="VEND-102">VEND-102: Apex Logistics Global</option>
+          <option value="VEND-103">VEND-103: CyberShield Security Ltd</option>
+          <option value="VEND-104">VEND-104: OfficeTech Supplies Co</option>
+        </select>
+      </div>
+
+      <div class="search-group">
+        <label for="invoice-search">Search Invoice / Ref:</label>
+        <input type="text" id="invoice-search" class="form-input" placeholder="e.g. INV-2026-001">
+      </div>
+    </section>
+
+    <!-- Invoices Registry Table -->
+    <section class="table-container">
+      <table class="erp-table" id="invoices-table">
+        <thead>
+          <tr>
+            <th>Invoice ID</th>
+            <th>Vendor Details</th>
+            <th>Gross Billed</th>
+            <th>Tax</th>
+            <th>Net Total</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Settlement Details</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoices-table-body">
+          {% for inv in invoices %}
+          <tr id="row-{{ inv.id }}" data-invoice-id="{{ inv.id }}" data-vendor-id="{{ inv.vendor_id }}" class="invoice-row status-{{ inv.status|lower }}">
+            <td class="cell-id">
+              <strong class="invoice-code">{{ inv.id }}</strong>
+            </td>
+            <td class="cell-vendor">
+              <div class="vendor-name">{{ inv.vendor_name }}</div>
+              <small class="vendor-tag">{{ inv.vendor_id }}</small>
+            </td>
+            <td class="cell-money">${{ "%.2f"|format(inv.gross_amount) }}</td>
+            <td class="cell-money">${{ "%.2f"|format(inv.tax_amount) }}</td>
+            <td class="cell-money cell-net">
+              <strong class="amount-val">${{ "%.2f"|format(inv.net_amount) }}</strong>
+              <span class="currency-badge">{{ inv.currency }}</span>
+            </td>
+            <td class="cell-date">{{ inv.due_date }}</td>
+            <td class="cell-status">
+              <span class="badge badge-{{ inv.status|lower }}" id="status-badge-{{ inv.id }}">
+                {{ inv.status }}
+              </span>
+            </td>
+            <td class="cell-match-ref">
+              {% if inv.match_reference %}
+                <code class="ref-code">{{ inv.match_reference }}</code>
+              {% elif inv.dispute_notes %}
+                <span class="dispute-snip" title="{{ inv.dispute_notes }}">{{ inv.dispute_notes }}</span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td class="cell-actions text-right">
+              {% if inv.status == "Pending" %}
+                <!-- Under Chaos mode, button id changes to test self-healing locator fallback -->
+                {% if chaos_mode and inv.id == "INV-2026-005" %}
+                  <button 
+                    class="btn btn-sm btn-success action-settle" 
+                    id="dyn-action-chaos-99x" 
+                    data-action="settle" 
+                    data-invoice-id="{{ inv.id }}"
+                    aria-label="Reconcile Invoice {{ inv.id }}"
+                  >
+                    Match & Settle
+                  </button>
+                {% else %}
+                  <button 
+                    class="btn btn-sm btn-success action-settle" 
+                    id="btn-settle-{{ inv.id }}" 
+                    data-action="settle" 
+                    data-invoice-id="{{ inv.id }}"
+                    aria-label="Reconcile Invoice {{ inv.id }}"
+                  >
+                    Match & Settle
+                  </button>
+                {% endif %}
+
+                <button 
+                  class="btn btn-sm btn-warning action-dispute" 
+                  id="btn-dispute-{{ inv.id }}" 
+                  data-action="dispute" 
+                  data-invoice-id="{{ inv.id }}"
+                  data-net-amount="{{ inv.net_amount }}"
+                  aria-label="Dispute Invoice {{ inv.id }}"
+                >
+                  Dispute
+                </button>
+              {% elif inv.status == "Reconciled" %}
+                <span class="verified-tag">✓ Settled</span>
+              {% elif inv.status == "Disputed" %}
+                <span class="dispute-tag">⚠️ On Hold</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Dispute Modal -->
+  <div id="dispute-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modal-title">Draft Vendor Dispute Ticket</h3>
+        <button id="btn-close-modal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modal-invoice-id">
+        <div class="form-group">
+          <label>Target Invoice</label>
+          <div id="modal-target-label" class="target-display"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="modal-expected-amt">Bank Expected Amount ($)</label>
+            <input type="number" step="0.01" id="modal-expected-amt" class="form-input" placeholder="820.00">
+          </div>
+          <div class="form-group half">
+            <label for="modal-billed-amt">ERP Billed Amount ($)</label>
+            <input type="number" step="0.01" id="modal-billed-amt" class="form-input" readonly>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="modal-reason">Dispute Reason / Category</label>
+          <select id="modal-reason" class="form-select">
+            <option value="Line Item Overbilling Variance">Line Item Overbilling Variance</option>
+            <option value="Unauthorized Rate Adjustment">Unauthorized Rate Adjustment</option>
+            <option value="Duplicate Service Charge">Duplicate Service Charge</option>
+            <option value="Missing Tax Exemption Credit">Missing Tax Exemption Credit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modal-notes">Investigation Notes</label>
+          <textarea id="modal-notes" class="form-textarea" rows="3" placeholder="Explain discrepancy details for AP vendor relations..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-dispute" class="btn btn-secondary">Cancel</button>
+        <button id="btn-submit-dispute" class="btn btn-danger">Confirm & Open Dispute</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

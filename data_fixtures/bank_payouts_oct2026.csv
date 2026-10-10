@@ -1,0 +1,6 @@
+payout_id,bank_reference,vendor_id,vendor_name,amount,currency,settlement_date,payment_method,memo
+PO-2026-001,TXN-CHASE-9901,VEND-101,CloudScale Infrastructure Inc,450.00,USD,2026-10-06,ACH_OUT,Monthly Compute & S3 Hosting
+PO-2026-002,TXN-CHASE-9902,VEND-102,Apex Logistics Global,2450.00,USD,2026-10-07,WIRE_OUT,Q3 Interstate Freight & Customs
+PO-2026-003,TXN-CHASE-9903,VEND-103,CyberShield Security Ltd,820.00,USD,2026-10-08,ACH_OUT,Endpoint Protection Renewal
+PO-2026-004,TXN-CHASE-9904,VEND-104,OfficeTech Supplies Co,125.03,USD,2026-10-08,ACH_OUT,Ergonomic Peripherals & Cables
+PO-2026-005,TXN-CHASE-9905,VEND-101,CloudScale Infrastructure Inc,380.00,USD,2026-10-09,ACH_OUT,Elastic Load Balancer Add-on

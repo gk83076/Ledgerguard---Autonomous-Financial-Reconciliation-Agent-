@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LedgerGuard | Autonomous Financial Reconciliation Operator</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="operator-body">
+  <!-- Top Navigation Header -->
+  <header class="console-header">
+    <div class="brand-cluster">
+      <div class="shield-logo">
+        <span class="shield-icon">🛡️</span>
+      </div>
+      <div>
+        <div class="brand-title">LedgerGuard <span class="brand-version">v1.0-Autonomous</span></div>
+        <div class="brand-sub">Enterprise Financial Operator & Reconciliation Runtime</div>
+      </div>
+    </div>
+
+    <div class="header-badges">
+      <div class="status-indicator" id="agent-runtime-status">
+        <span class="status-dot dot-idle"></span>
+        <span class="status-text">OPERATOR IDLE</span>
+      </div>
+
+      <div class="ws-badge connected" id="ws-status-badge">
+        <span class="pulse-ring"></span>
+        <span>Telemetry Live</span>
+      </div>
+
+      <a href="/api/report" target="_blank" class="btn btn-outline-cyan btn-sm" id="btn-view-audit-report">
+        📑 View Audit Report
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="console-layout">
+    <!-- Left Column: Goal Control & Real-time Loop Pipeline -->
+    <section class="left-panel">
+      <!-- Mission Dispatch Card -->
+      <div class="card dispatch-card">
+        <div class="card-header">
+          <h2>🎯 Mission Objective & Strategy</h2>
+          <span class="tag-model">OpenRouter / Sonnet-3.5</span>
+        </div>
+
+        <div class="scenario-buttons">
+          <button class="btn-scenario active" data-scenario="full">
+            <span class="scenario-icon">⚡</span>
+            <div class="scenario-text">
+              <strong>Scenario 1: Full Enterprise Run</strong>
+              <small>Auto ($450) + HITL ($2,450) + Dispute ($90)</small>
+            </div>
+          </button>
+          <button class="btn-scenario" data-scenario="auto">
+            <span class="scenario-icon">🤖</span>
+            <div class="scenario-text">
+              <strong>Scenario 2: Zero-Touch Autonomous</strong>
+              <small>Pre-authorized manager bypass</small>
+            </div>
+          </button>
+          <button class="btn-scenario" data-scenario="chaos">
+            <span class="scenario-icon">🌪️</span>
+            <div class="scenario-text">
+              <strong>Scenario 3: Chaos & Self-Healing</strong>
+              <small>Mutated DOM selector fallback</small>
+            </div>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="goal-input">Operational Goal Specification</label>
+          <textarea id="goal-input" rows="3" class="form-textarea">Reconcile vendor payouts from last week's CSV against internal ERP portal, flag discrepancies, draft dispute tickets, and process undisputed batches under $1,000.</textarea>
+        </div>
+
+        <div class="dispatch-actions">
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="chk-auto-approve"> Auto-Approve HITL Gates
+            </label>
+            <label>
+              <input type="checkbox" id="chk-headless" checked> Headless Browser
+            </label>
+          </div>
+          <button id="btn-deploy-agent" class="btn btn-primary btn-glow">
+            🚀 Deploy AI Employee
+          </button>
+        </div>
+      </div>
+
+      <!-- Autonomous Loop Pipeline Tracker -->
+      <div class="card pipeline-card">
+        <div class="card-header">
+          <h2>🔄 Autonomous Operating Cycle</h2>
+          <span class="sub-pill">8 Deterministic Stages</span>
+        </div>
+
+        <div class="stages-grid" id="pipeline-stages">
+          <div class="stage-step" id="stage-understand" data-stage="UNDERSTAND">
+            <div class="stage-number">1</div>
+            <div class="stage-info">
+              <span class="stage-name">Understand</span>
+              <small>SOP Memory</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-plan" data-stage="PLAN">
+            <div class="stage-number">2</div>
+            <div class="stage-info">
+              <span class="stage-name">Plan</span>
+              <small>LLM Strategy</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-ingest" data-stage="INGEST">
+            <div class="stage-number">3</div>
+            <div class="stage-info">
+              <span class="stage-name">Ingest</span>
+              <small>Bank CSV</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-connect" data-stage="CONNECT">
+            <div class="stage-number">4</div>
+            <div class="stage-info">
+              <span class="stage-name">Connect</span>
+              <small>Playwright ERP</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-policy_check" data-stage="POLICY_CHECK">
+            <div class="stage-number">5</div>
+            <div class="stage-info">
+              <span class="stage-name">Policy Gate</span>
+              <small>3-Way Match</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-execute" data-stage="EXECUTE">
+            <div class="stage-number">6</div>
+            <div class="stage-info">
+              <span class="stage-name">Execute</span>
+              <small>DOM Actions</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-adapt" data-stage="ADAPT">
+            <div class="stage-number">7</div>
+            <div class="stage-info">
+              <span class="stage-name">Adapt</span>
+              <small>Self-Healing</small>
+            </div>
+          </div>
+          <div class="stage-step" id="stage-verify" data-stage="VERIFY">
+            <div class="stage-number">8</div>
+            <div class="stage-info">
+              <span class="stage-name">Verify</span>
+              <small>Double-Entry</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Stream -->
+      <div class="card telemetry-card">
+        <div class="card-header">
+          <h2>📡 Real-Time Telemetry & Log Stream</h2>
+          <span class="stream-count" id="event-counter">0 Events</span>
+        </div>
+        <div class="log-stream-box" id="log-stream-container">
+          <div class="log-entry log-system">
+            <span class="log-time">00:00:00</span>
+            <span class="log-badge badge-sys">SYSTEM</span>
+            <span class="log-msg">LedgerGuard Operator Console initialized. Waiting for task dispatch...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: HITL Governance, Verification Proof & Evidence -->
+    <section class="right-panel">
+      <!-- HITL Governance Alert Box -->
+      <div class="card hitl-card" id="hitl-panel">
+        <div class="card-header">
+          <h2>🛡️ Human-in-the-Loop Governance Gate</h2>
+          <span class="badge badge-hitl-status" id="hitl-badge">0 Pending Approvals</span>
+        </div>
+
+        <div id="hitl-requests-container" class="hitl-body">
+          <div class="hitl-idle-state">
+            <span class="idle-shield">✅</span>
+            <p>No transactions currently suspended at governance gate.</p>
+            <small>High-risk payouts (> $1,000) or variances will pause execution here for authorization.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deterministic Verification Card -->
+      <div class="card verification-card">
+        <div class="card-header">
+          <h2>⚖️ Deterministic Balance & UI Verification</h2>
+          <span class="verif-tag-pill" id="verif-status-badge">Standby</span>
+        </div>
+
+        <div class="verif-grid">
+          <div class="verif-stat">
+            <span class="verif-label">Total Bank Debits</span>
+            <span class="verif-val" id="val-bank-debits">$0.00</span>
+          </div>
+          <div class="verif-stat">
+            <span class="verif-label">Reconciled Settled</span>
+            <span class="verif-val text-success" id="val-settled">$0.00</span>
+          </div>
+          <div class="verif-stat">
+            <span class="verif-label">Disputed Held</span>
+            <span class="verif-val text-danger" id="val-disputed">$0.00</span>
+          </div>
+          <div class="verif-stat">
+            <span class="verif-label">Double-Entry Delta</span>
+            <span class="verif-val" id="val-delta">$0.00</span>
+          </div>
+        </div>
+
+        <div class="verif-checks">
+          <div class="check-item" id="check-ui-dom">
+            <span class="check-icon">⚪</span>
+            <span>ERP DOM Post-Action Status Assertion</span>
+          </div>
+          <div class="check-item" id="check-double-entry">
+            <span class="check-icon">⚪</span>
+            <span>Double-Entry Mathematical Balance Delta = $0.00</span>
+          </div>
+          <div class="check-item" id="check-hash-chain">
+            <span class="check-icon">⚪</span>
+            <span>SHA-256 Tamper-Evident Chained Event Log Integrity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Evidence Inspector -->
+      <div class="card evidence-card">
+        <div class="card-header">
+          <h2>📸 Visual Evidence Proof-of-Work</h2>
+          <span class="evidence-sub">Timestamped Viewport Captures</span>
+        </div>
+        <div class="evidence-display" id="evidence-viewer">
+          <div class="evidence-placeholder">
+            <span>📷 Visual evidence captures will appear here as browser actions execute.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

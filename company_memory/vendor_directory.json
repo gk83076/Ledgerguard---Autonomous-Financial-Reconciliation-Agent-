@@ -1,0 +1,42 @@
+[
+  {
+    "vendor_id": "VEND-101",
+    "name": "CloudScale Infrastructure Inc",
+    "category": "Cloud & Hosting",
+    "standard_terms": "Net-30",
+    "risk_level": "Low",
+    "auto_match_enabled": true
+  },
+  {
+    "vendor_id": "VEND-102",
+    "name": "Apex Logistics Global",
+    "category": "Freight & Shipping",
+    "standard_terms": "Net-15",
+    "risk_level": "Medium",
+    "auto_match_enabled": true
+  },
+  {
+    "vendor_id": "VEND-103",
+    "name": "CyberShield Security Ltd",
+    "category": "InfoSec SaaS",
+    "standard_terms": "Net-30",
+    "risk_level": "Low",
+    "auto_match_enabled": true
+  },
+  {
+    "vendor_id": "VEND-104",
+    "name": "OfficeTech Supplies Co",
+    "category": "Workplace Equipment",
+    "standard_terms": "Net-45",
+    "risk_level": "Low",
+    "auto_match_enabled": true
+  },
+  {
+    "vendor_id": "VEND-105",
+    "name": "Quantum Data Systems",
+    "category": "Data Analytics",
+    "standard_terms": "Net-30",
+    "risk_level": "High",
+    "auto_match_enabled": false
+  }
+]

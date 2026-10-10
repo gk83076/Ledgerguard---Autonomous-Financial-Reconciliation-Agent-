@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Portal Login | LedgerGuard AP Gateway</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <div class="auth-header">
+      <div class="logo-badge">🏢 NexusERP</div>
+      <h1>Enterprise Billing & AP Portal</h1>
+      <p class="subtitle">Secure Operational Gateway for Finance & Reconciliation</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-error" id="login-error-alert">
+      <span>⚠️ {{ error }}</span>
+    </div>
+    {% endif %}
+
+    <form action="/login" method="POST" class="auth-form" id="login-form">
+      <div class="form-group">
+        <label for="username">Corporate ID / Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          value="ops_admin" 
+          required 
+          autocomplete="username"
+          placeholder="e.g. ops_admin"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Enterprise Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          value="LedgerGuardSecure2026!" 
+          required 
+          autocomplete="current-password"
+        >
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block">
+          Authenticate & Enter Portal
+        </button>
+      </div>
+
+      <div class="auth-footer-hint">
+        <small>Demo Sandbox Credentials: <code>ops_admin</code> / <code>LedgerGuardSecure2026!</code></small>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
